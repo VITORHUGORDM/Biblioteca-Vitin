@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biblioteca do Vitin</title>
+    <meta
+      name="description"
+      content="Descubra e compre livros online. Busque por título, autor ou categoria. Links diretos para Amazon e Mercado Livre."
+    />
+  <link rel="stylesheet" href="../css/biblioteca.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo-section">
+          <h1>Biblioteca do Vitin</h1>
+        </div>
+        <nav class="nav">
+          <a href="#inicio" class="nav-link">Início</a>
+          <a href="#destaque" class="nav-link">Destaque</a>
+          <a href="#categorias" class="nav-link">Categorias</a>
+          <a href="#favoritos" class="nav-link">Favoritos</a>
+          <a href="#sobre" class="nav-link">Sobre</a>
+          <a href="./Login.html" class="nav-link nav-login" aria-label="Entrar">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Entrar</span>
+          </a>
+        </nav>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+      </div>
+    </header>
+
+    <section class="hero" id="inicio">
+      <div class="container">
+        <div class="hero-content">
+          <h2>Descubra Seu Próximo Livro Favorito</h2>
+          <p>
+            Explore nossa vasta coleção de livros em diversas categorias e
+            encontre histórias que transformam vidas. Compre diretamente na
+            Amazon ou Mercado Livre!
+          </p>
+
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Buscar por título, autor ou ISBN"
+              aria-label="Buscar livros"
+            />
+            <button class="search-btn" id="searchBtn" aria-label="Buscar">
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="featured-section" id="destaque">
+      <div class="container">
+        <h3>⭐ Livros em Destaque</h3>
+        <p class="subtitle">
+          Seleção especial dos nossos livros mais populares e bem avaliados
+        </p>
+
+        <div class="books-grid featured-grid" id="featuredBooks"></div>
+      </div>
+    </section>
+
+    <section class="categories-section" id="categorias">
+      <div class="container">
+        <h3>📂 Categorias</h3>
+        <p class="subtitle">Escolha uma categoria para explorar</p>
+        <div class="categories-filter" id="categoriesFilter"></div>
+      </div>
+    </section>
+
+    <section class="books-section">
+      <div class="container">
+        <h3 id="booksTitle">Todos os Livros</h3>
+        <div class="books-grid" id="allBooks"></div>
+        <div id="noResults" class="no-results" style="display: none">
+          <div class="no-results-content">
+            <p>📖 Nenhum livro encontrado</p>
+            <p class="no-results-subtitle">
+              Tente outra busca ou escolha outra categoria
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="favorites-section" id="favoritos">
+      <div class="container">
+        <h3>❤️ Favoritos</h3>
+        <div class="books-grid" id="favoriteBooks"></div>
+        <div id="noFavorites" class="no-results" style="display:none">
+          <div class="no-results-content">
+            <p>Sem favoritos ainda</p>
+            <p class="no-results-subtitle">Clique no coração em um livro para favoritar</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="bookModal" class="modal">
+      <div class="modal-content">
+        <button class="close" id="closeModal" aria-label="Fechar">
+          &times;
+        </button>
+        <div class="modal-body">
+          <div class="modal-image-container">
+            <img
+              id="modalImage"
+              src=""
+              alt="Capa do livro"
+              class="modal-image"
+            />
+          </div>
+          <div class="modal-info">
+            <h2 id="modalTitle"></h2>
+            <button class="fav-btn" id="modalFavBtn" aria-label="Adicionar aos favoritos">♡</button>
+            <p id="modalAuthor" class="modal-author"></p>
+
+            <div class="modal-details">
+              <div class="detail-item">
+                <strong>Categoria:</strong>
+                <p id="modalCategory"></p>
+              </div>
+              <div class="detail-item">
+                <strong>Ano:</strong>
+                <p id="modalYear"></p>
+              </div>
+              <div class="detail-item">
+                <strong>ISBN:</strong>
+                <p id="modalISBN"></p>
+              </div>
+              <div class="detail-item">
+                <strong>Avaliação:</strong>
+                <p id="modalRating"></p>
+              </div>
+            </div>
+
+            <p id="modalDescription" class="modal-description"></p>
+
+            <div class="buy-section">
+              <h4>💳 Comprar Agora</h4>
+              <div class="buy-buttons">
+                <a
+                  id="amazonLink"
+                  href="#"
+                  class="buy-btn amazon-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                </a>
+                <a
+                  id="mercadoLivreLink"
+                  href="#"
+                  class="buy-btn mercado-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                </a>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="closeModalBtn">
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="newsletter-section">
+      <div class="container">
+        <div class="newsletter-content">
+          <h3>📧 Receba Recomendações de Livros</h3>
+          <p>
+            Inscreva-se em nossa newsletter para receber as melhores
+            recomendações de livros toda semana!
+          </p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input
+              type="email"
+              placeholder="Seu email"
+              required
+              aria-label="Email"
+            />
+            <button type="submit" class="btn btn-primary">Inscrever-se</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" id="sobre">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>Biblioteca do Vitin</h4>
+            <p>
+              Sua plataforma de descoberta e compra de livros online. Encontre
+              os melhores títulos com links diretos para as principais lojas.
+            </p>
+          </div>
+          <div class="footer-section">
+            <h4>Navegação</h4>
+            <ul>
+              <li><a href="#inicio">Início</a></li>
+              <li><a href="#destaque">Livros em Destaque</a></li>
+              <li><a href="#categorias">Categorias</a></li>
+              <li><a href="#sobre">Sobre</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>Biblioteca do Vitin</p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="../js/biblioteca.js"></script>
+  </body>
+</html>

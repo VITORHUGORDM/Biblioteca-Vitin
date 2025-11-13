@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login</title>
+  <link rel="stylesheet" href="../css/biblioteca.css" />
+  <link rel="stylesheet" href="../css/login.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <a class="logo-section" href="./Biblioteca.html">
+          <h1>Biblioteca do Vitin</h1>
+        </a>
+        <nav class="nav">
+          <a class="nav-link" href="./Biblioteca.html">Início</a>
+          <a class="nav-link nav-login" href="#auth">Entrar / Cadastrar</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="auth" class="auth-section container" style="padding:40px 0;">
+        <div class="auth-wrapper">
+          <div class="auth-card">
+            <div class="auth-layout">
+              <aside class="auth-side">
+                <div class="brand">
+                  <div class="brand-mark">📚</div>
+                  <h3>Biblioteca do Vitin</h3>
+                </div>
+                <p>
+                  Descubra, salve favoritos e compre livros com poucos cliques.
+                </p>
+              </aside>
+              <div class="auth-main">
+                <h2 class="intro-title">Bem-vindo(a)</h2>
+                <p class="intro-sub">Faça login para acessar sua área</p>
+                <form id="loginForm" class="auth-form" autocomplete="on">
+                  <div class="form-row">
+                    <label for="loginEmail">Email</label>
+                    <input id="loginEmail" name="email" type="email" required placeholder="seu@exemplo.com" />
+                  </div>
+                  <div class="form-row">
+                    <label for="loginPassword">Senha</label>
+                    <input id="loginPassword" name="password" type="password" required minlength="4" placeholder="Senha" />
+                  </div>
+                  <div class="form-row" style="margin-top:-4px;">
+                    <a id="forgotPasswordLink" class="link-muted" href="#">Esqueceu a senha?</a>
+                  </div>
+                  <div class="form-row">
+                    <button type="submit" class="btn btn-danger">Fazer Login</button>
+                  </div>
+                  <div class="form-row" style="text-align:center;">
+                    <a id="goToRegisterLink" class="link-accent" href="#">Cadastre-se</a>
+                  </div>
+                  <div id="loginMessage" class="form-message" aria-live="polite"></div>
+                </form>
+                <form id="registerForm" class="auth-form" style="display:none;" autocomplete="on">
+                  <div class="form-row">
+                    <label for="regName">Nome</label>
+                    <input id="regName" name="name" type="text" required placeholder="Seu nome" />
+                  </div>
+                  <div class="form-row">
+                    <label for="regEmail">Email</label>
+                    <input id="regEmail" name="email" type="email" required placeholder="seu@exemplo.com" />
+                  </div>
+                  <div class="form-row">
+                    <label for="regPassword">Senha</label>
+                    <input id="regPassword" name="password" type="password" required minlength="4" placeholder="Senha" />
+                  </div>
+                  <div class="form-row">
+                    <label for="regPasswordConfirm">Confirmar senha</label>
+                    <input id="regPasswordConfirm" name="passwordConfirm" type="password" required minlength="4" placeholder="Confirme a senha" />
+                  </div>
+                  <div class="form-row">
+                    <button type="submit" class="btn btn-danger">Cadastrar</button>
+                  </div>
+                  <div class="form-row" style="text-align:center;">
+                    <a id="goToLoginLink" class="link-accent" href="#">Já tem conta? Fazer login</a>
+                  </div>
+                  <div id="registerMessage" class="form-message" aria-live="polite"></div>
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../js/login.js" type="module"></script>
+  </body>
+</html>
