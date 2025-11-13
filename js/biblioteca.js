@@ -11,8 +11,6 @@ const books = [
       "Uma obra envolvente que explora os mistérios do universo e da mente humana. Uma narrativa profunda que questiona a realidade e nos leva a refletir sobre nossa existência.",
     isbn: "978-8532529",
     amazonLink: "https://www.amazon.com.br/s?k=Abismo+Leo+Alves+livro",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Abismo+Leo+Alves",
     featured: true,
   },
   {
@@ -27,8 +25,6 @@ const books = [
       "Uma compilação de histórias e ensinamentos que transformam vidas. Ideal para quem busca inspiração e crescimento pessoal. Cada história é uma lição de vida.",
     isbn: "978-8532530",
     amazonLink: "https://www.amazon.com.br/s?k=Colecao+Livros+Inspiradores",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Colecao+Livros+Inspiradores",
     featured: true,
   },
   {
@@ -43,8 +39,6 @@ const books = [
       "Descubra os segredos das capas de livros que atraem leitores. Um guia essencial para autores e designers que desejam criar capas impactantes.",
     isbn: "978-8532531",
     amazonLink: "https://www.amazon.com.br/s?k=Capas+Que+Vendem+livro",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Capas+Que+Vendem",
     featured: true,
   },
   {
@@ -60,8 +54,6 @@ const books = [
     isbn: "978-8532532",
     amazonLink:
       "https://www.amazon.com.br/s?k=O+Poder+do+Habito+Charles+Duhigg",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Poder+Habito+Duhigg",
     featured: false,
   },
   {
@@ -76,8 +68,6 @@ const books = [
       "Uma jornada pela história da humanidade, desde o surgimento do Homo sapiens até os dias modernos. Uma perspectiva única e fascinante sobre nossa espécie.",
     isbn: "978-8532533",
     amazonLink: "https://www.amazon.com.br/s?k=Sapiens+Yuval+Noah+Harari",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Sapiens+Yuval+Harari",
     featured: false,
   },
   {
@@ -92,8 +82,6 @@ const books = [
       "Descubra como a mentalidade fixa ou de crescimento pode transformar seu sucesso. Um livro que mudou a vida de milhões de pessoas ao redor do mundo.",
     isbn: "978-8532534",
     amazonLink: "https://www.amazon.com.br/s?k=Mindset+Carol+Dweck",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Mindset+Carol+Dweck",
     featured: false,
   },
   {
@@ -108,8 +96,6 @@ const books = [
       "Um clássico da ficção científica que explora um futuro distópico e assustador. Uma obra que continua relevante e provocadora até hoje.",
     isbn: "978-8532535",
     amazonLink: "https://www.amazon.com.br/s?k=1984+George+Orwell",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=1984+George+Orwell",
     featured: false,
   },
   {
@@ -124,8 +110,6 @@ const books = [
       "Uma emocionante aventura repleta de mistérios, símbolos e reviravoltas surpreendentes. Um livro que mantém o leitor na beira do assento do início ao fim.",
     isbn: "978-8532536",
     amazonLink: "https://www.amazon.com.br/s?k=Codigo+da+Vinci+Dan+Brown",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Codigo+Vinci+Dan+Brown",
     featured: false,
   },
   {
@@ -140,8 +124,6 @@ const books = [
       "Explore os dois sistemas de pensamento que governam nossas decisões. Um livro fascinante sobre como pensamos e tomamos decisões.",
     isbn: "978-8532537",
     amazonLink: "https://www.amazon.com.br/s?k=Rapido+Devagar+Daniel+Kahneman",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Rapido+Devagar+Kahneman",
     featured: false,
   },
   {
@@ -155,9 +137,8 @@ const books = [
     description:
       "Uma aventura épica em um mundo mágico cheio de criaturas fantásticas. O clássico que iniciou uma das maiores sagas da literatura.",
     isbn: "978-8532538",
-    amazonLink: "https://www.amazon.com.br/s?k=O+Hobbit+Tolkien",
-    mercadoLivreLink: "https://www.mercadolivre.com.br/busca?q=Hobbit+Tolkien",
-    featured: false,
+  amazonLink: "https://www.amazon.com.br/s?k=O+Hobbit+Tolkien",
+  featured: false,
   },
   {
     id: 11,
@@ -171,8 +152,6 @@ const books = [
       "Aprenda como a inteligência emocional pode ser mais importante que o QI. Um livro que revolucionou nossa compreensão da inteligência.",
     isbn: "978-8532539",
     amazonLink: "https://www.amazon.com.br/s?k=Inteligencia+Emocional+Goleman",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Inteligencia+Emocional+Goleman",
     featured: false,
   },
   {
@@ -187,8 +166,6 @@ const books = [
       "Entenda como a tecnologia está transformando a sociedade e o futuro do trabalho. Uma visão essencial para o século XXI.",
     isbn: "978-8532540",
     amazonLink: "https://www.amazon.com.br/s?k=Revolucao+Digital+Klaus+Schwab",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Revolucao+Digital+Schwab",
     featured: false,
   },
   {
@@ -203,8 +180,6 @@ const books = [
       "Pequenas mudanças, resultados extraordinários. Um guia prático para construir bons hábitos e eliminar os ruins.",
     isbn: "978-8532541",
     amazonLink: "https://www.amazon.com.br/s?k=Habitos+Atomicos+James+Clear",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Habitos+Atomicos+Clear",
     featured: false,
   },
   {
@@ -219,8 +194,6 @@ const books = [
       "A épica definitiva da fantasia. Uma obra-prima que definiu o gênero e continua fascinando gerações de leitores.",
     isbn: "978-8532542",
     amazonLink: "https://www.amazon.com.br/s?k=Senhor+dos+Aneis+Tolkien",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Senhor+Aneis+Tolkien",
     featured: false,
   },
   {
@@ -235,8 +208,6 @@ const books = [
       "Um romance clássico que permanece relevante após séculos. A história de Elizabeth Bennet e Mr. Darcy é inesquecível.",
     isbn: "978-8532543",
     amazonLink: "https://www.amazon.com.br/s?k=Orgulho+Preconceito+Jane+Austen",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Orgulho+Preconceito+Austen",
     featured: false,
   },
   {
@@ -251,8 +222,6 @@ const books = [
       "Uma história poderosa de sobrevivência e descoberta de significado. Um livro que inspira e transforma perspectivas sobre a vida.",
     isbn: "978-8532544",
     amazonLink: "https://www.amazon.com.br/s?k=Homem+Busca+Sentido+Frankl",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Homem+Busca+Sentido+Frankl",
     featured: false,
   },
   {
@@ -267,8 +236,6 @@ const books = [
       "Uma jornada mágica em busca do tesouro pessoal. Uma fábula moderna que toca o coração de milhões de leitores.",
     isbn: "978-8532545",
     amazonLink: "https://www.amazon.com.br/s?k=Alquimista+Paulo+Coelho",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Alquimista+Paulo+Coelho",
     featured: false,
   },
   {
@@ -283,8 +250,6 @@ const books = [
       "Descubra como nossas mentes funcionam e por que cometemos erros sistemáticos. Um livro essencial sobre comportamento humano.",
     isbn: "978-8532546",
     amazonLink: "https://www.amazon.com.br/s?k=Thinking+Fast+Slow+Kahneman",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Thinking+Fast+Slow",
     featured: false,
   },
   {
@@ -299,8 +264,6 @@ const books = [
       "Aprenda a viver no presente e transformar sua vida. Um guia espiritual que mudou a vida de milhões de pessoas.",
     isbn: "978-8532547",
     amazonLink: "https://www.amazon.com.br/s?k=Poder+do+Agora+Eckhart+Tolle",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Poder+Agora+Tolle",
     featured: false,
   },
   {
@@ -315,8 +278,6 @@ const books = [
       "Lições de finanças pessoais através de uma história inspiradora. Um livro que mudou a forma como as pessoas pensam sobre dinheiro.",
     isbn: "978-8532548",
     amazonLink: "https://www.amazon.com.br/s?k=Pai+Rico+Pai+Pobre+Kiyosaki",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Pai+Rico+Pai+Pobre",
     featured: false,
   },
   {
@@ -331,8 +292,6 @@ const books = [
       "Uma história tocante ambientada na Alemanha nazista. Um livro que celebra o poder das palavras e da humanidade.",
     isbn: "978-8532549",
     amazonLink: "https://www.amazon.com.br/s?k=Menina+Roubava+Livros+Zusak",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Menina+Roubava+Livros",
     featured: false,
   },
   {
@@ -347,8 +306,6 @@ const books = [
       "O relato comovente de uma jovem durante o Holocausto. Um documento histórico que continua relevante e inspirador.",
     isbn: "978-8532550",
     amazonLink: "https://www.amazon.com.br/s?k=Diario+Anne+Frank",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Diario+Anne+Frank",
     featured: false,
   },
   {
@@ -363,8 +320,6 @@ const books = [
       "Uma obra-prima da literatura russa que explora culpa, redenção e moralidade. Um livro profundo e perturbador.",
     isbn: "978-8532551",
     amazonLink: "https://www.amazon.com.br/s?k=Crime+Castigo+Dostoievski",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Crime+Castigo+Dostoievski",
     featured: false,
   },
   {
@@ -379,8 +334,6 @@ const books = [
       "Uma fábula poética sobre amor, perda e o significado da vida. Um clássico que toca crianças e adultos.",
     isbn: "978-8532552",
     amazonLink: "https://www.amazon.com.br/s?k=Pequeno+Principe+Saint+Exupery",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Pequeno+Principe",
     featured: false,
   },
   {
@@ -395,8 +348,6 @@ const books = [
       "Uma saga familiar épica em um mundo mágico. Uma obra-prima do realismo mágico que define gerações.",
     isbn: "978-8532553",
     amazonLink: "https://www.amazon.com.br/s?k=Cem+Anos+Solidao+Garcia+Marquez",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Cem+Anos+Solidao",
     featured: false,
   },
   {
@@ -411,8 +362,6 @@ const books = [
       "Uma alegoria perturbadora sobre a natureza humana e a civilização. Um livro que questiona nossas suposições.",
     isbn: "978-8532554",
     amazonLink: "https://www.amazon.com.br/s?k=Senhor+Moscas+William+Golding",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Senhor+Moscas+Golding",
     featured: false,
   },
   {
@@ -427,8 +376,6 @@ const books = [
       "Uma exploração da natureza selvagem feminina. Um livro empoderador que celebra a força das mulheres.",
     isbn: "978-8532555",
     amazonLink: "https://www.amazon.com.br/s?k=Mulheres+Correm+Lobos+Pinkola",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Mulheres+Correm+Lobos",
     featured: false,
   },
   {
@@ -443,8 +390,6 @@ const books = [
       "Uma aventura divertida e criativa sobre um raposo astuto. Um livro que encanta leitores de todas as idades.",
     isbn: "978-8532556",
     amazonLink: "https://www.amazon.com.br/s?k=Fantastico+Sr+Raposo+Roald+Dahl",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Fantastico+Sr+Raposo",
     featured: false,
   },
   {
@@ -459,8 +404,6 @@ const books = [
       "Uma alegoria política sobre poder e corrupção. Uma sátira brilhante que permanece relevante.",
     isbn: "978-8532557",
     amazonLink: "https://www.amazon.com.br/s?k=Revolucao+Bichos+George+Orwell",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Revolucao+Bichos+Orwell",
     featured: false,
   },
   {
@@ -475,8 +418,6 @@ const books = [
       "Uma história gótica sobre vaidade, beleza e corrupção moral. Uma obra clássica da literatura inglesa.",
     isbn: "978-8532558",
     amazonLink: "https://www.amazon.com.br/s?k=Retrato+Dorian+Gray+Oscar+Wilde",
-    mercadoLivreLink:
-      "https://www.mercadolivre.com.br/busca?q=Retrato+Dorian+Gray",
     featured: false,
   },
 ];
@@ -706,10 +647,10 @@ function filterByCategory(category) {
       .scrollIntoView({ behavior: "smooth" });
   }, 100);
 }
-function searchBooks(term) {
-  searchTerm = term.toLowerCase();
+function searchBooks(term, shouldScroll = false) {
+  searchTerm = (term || "").toLowerCase();
   renderAllBooks();
-  if (filterBooks().length > 0) {
+  if (shouldScroll && filterBooks().length > 0) {
     setTimeout(() => {
       document
         .querySelector(".books-section")
@@ -759,12 +700,6 @@ function openModal(book) {
     amazonA.textContent = "🛒 Comprar na Amazon";
   }
 
-  const mlA = document.getElementById("mercadoLivreLink");
-  if (mlA) {
-    mlA.href = book.mercadoLivreLink;
-    mlA.textContent = "🛍️ Comprar no Mercado Livre";
-  }
-
   updateModalFavBtn();
 
   if (modal) modal.classList.add("show");
@@ -777,13 +712,16 @@ function closeModal() {
 }
 function setupEventListeners() {
   if (searchInput) {
-    searchInput.addEventListener("input", (e) => searchBooks(e.target.value));
+    // Atualiza resultados enquanto digita, sem rolar a página
+    searchInput.addEventListener("input", (e) => searchBooks(e.target.value, false));
+    // Só rola para os resultados quando pressionar Enter
     searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") searchBooks(searchInput.value);
+      if (e.key === "Enter") searchBooks(searchInput.value, true);
     });
   }
 
-  if (searchBtn) searchBtn.addEventListener("click", () => searchBooks(searchInput.value));
+  // Clique no botão de busca também rola para os resultados
+  if (searchBtn) searchBtn.addEventListener("click", () => searchBooks(searchInput.value, true));
   if (closeBtn) closeBtn.addEventListener("click", closeModal);
   if (typeof closeModalBtn !== "undefined" && closeModalBtn)
     closeModalBtn.addEventListener("click", closeModal);

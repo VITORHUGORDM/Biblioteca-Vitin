@@ -6,7 +6,7 @@
 2. RF02 - Busca em tempo real por título, autor ou ISBN (suportar combinação com filtro).
 3. RF03 - Filtrar livros por categoria (incluir "Todos").
 4. RF04 - Exibir livros em destaque (featured).
-5. RF05 - Abrir modal de detalhe com descrição, ISBN, avaliações e links de compra (Amazon, Mercado Livre).
+5. RF05 - Abrir modal de detalhe com descrição, ISBN, avaliações e link de compra (Amazon).
 6. RF06 - Inscrição em newsletter com validação de e-mail e confirmação.
 7. RF07 - Lazy loading de imagens e placeholders enquanto carregam.
 8. RF08 - Acessibilidade: navegação por teclado, ARIA labels, foco visível e ESC fecha modal.
@@ -195,8 +195,7 @@ Cada livro contém:
     image: string,           // Caminho da imagem
     description: string,     // Descrição
     isbn: string,            // ISBN
-    amazonLink: string,      // Link Amazon
-    mercadoLivreLink: string,// Link Mercado Livre
+   amazonLink: string,      // Link Amazon
     featured: boolean        // Mostrar em destaque?
 }
 ```

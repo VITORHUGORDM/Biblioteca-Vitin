@@ -792,15 +792,7 @@ body {
   box-shadow: 0 8px 16px rgba(255, 153, 0, 0.3);
 }
 
-.mercado-btn {
-  background: linear-gradient(135deg, #ffe600 0%, #ffc300 100%);
-  color: #333;
-}
 
-.mercado-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(255, 198, 0, 0.3);
-}
 
 .btn-icon {
   font-size: 18px;
