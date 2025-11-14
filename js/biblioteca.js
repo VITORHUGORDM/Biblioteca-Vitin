@@ -482,6 +482,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   } catch (_) {}
 });
+
+// Util: debounce
+function debounce(fn, delay = 250) {
+  let t;
+  return function (...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
 function isFavorite(bookId) {
   return favorites.has(bookId);
 }
@@ -594,7 +603,7 @@ function createBookCard(book) {
 
   card.innerHTML = `
     <button class="fav-btn ${fav ? "active" : ""}" data-id="${book.id}" aria-label="${fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}" title="${getCurrentUser() ? (fav ? "Remover dos favoritos" : "Adicionar aos favoritos") : "Faça login para favoritar"}">${fav ? "❤️" : "♡"}</button>
-    <img src="${book.image}" alt="${book.title}" class="book-image" loading="lazy">
+    <div class="image-wrapper"><div class="skeleton" aria-hidden="true"></div><img src="${book.image}" alt="${book.title}" class="book-image" loading="lazy"></div>
     <div class="book-info">
       <h3 class="book-title">${book.title}</h3>
       <p class="book-author">${book.author}</p>
@@ -614,6 +623,19 @@ function createBookCard(book) {
     e.stopPropagation();
     toggleFavorite(book.id);
   });
+
+  // image load/fallback handling
+  const img = card.querySelector(".book-image");
+  const wrapper = card.querySelector(".image-wrapper");
+  if (img && wrapper) {
+    const done = () => wrapper.classList.add("loaded");
+    img.addEventListener("load", done, { once: true });
+    img.addEventListener("error", () => {
+      img.src = FALLBACK_IMG;
+      img.alt = `${book.title} (capa indisponível)`;
+      done();
+    }, { once: true });
+  }
 
   return card;
 }
@@ -662,7 +684,15 @@ function openModal(book) {
   currentModalBookId = book.id;
 
   const imgEl = document.getElementById("modalImage");
-  if (imgEl) imgEl.src = book.image;
+  const modalSpinner = document.getElementById("modalImgSpinner");
+  if (modalSpinner) modalSpinner.style.display = "block";
+  if (imgEl) {
+    imgEl.removeAttribute("aria-hidden");
+    imgEl.src = book.image;
+    const onDone = () => { if (modalSpinner) modalSpinner.style.display = "none"; };
+    imgEl.onload = onDone;
+    imgEl.onerror = () => { imgEl.src = FALLBACK_IMG; onDone(); };
+  }
 
   const titleEl = document.getElementById("modalTitle");
   if (titleEl) titleEl.textContent = book.title;
@@ -702,18 +732,25 @@ function openModal(book) {
 
   updateModalFavBtn();
 
-  if (modal) modal.classList.add("show");
+  if (modal) {
+    modal.classList.add("show");
+    setupModalA11y();
+  }
   document.body.style.overflow = "hidden";
 }
 function closeModal() {
   modal.classList.remove("show");
   document.body.style.overflow = "auto";
   currentModalBookId = null;
+  teardownModalA11y();
 }
 function setupEventListeners() {
   if (searchInput) {
-    // Atualiza resultados enquanto digita, sem rolar a página
-    searchInput.addEventListener("input", (e) => searchBooks(e.target.value, false));
+    // Atualiza resultados com debounce, sem rolar a página
+    const debounced = debounce((value) => {
+      searchBooks(value, false);
+    }, 250);
+    searchInput.addEventListener("input", (e) => debounced(e.target.value));
     // Só rola para os resultados quando pressionar Enter
     searchInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") searchBooks(searchInput.value, true);
@@ -737,12 +774,34 @@ function setupEventListeners() {
     link.addEventListener("click", () => nav.classList.remove("active"))
   );
   if (newsletterForm) {
+    const msg = document.getElementById("newsletterMessage");
+    const btn = document.getElementById("newsletterSubmitBtn");
+    const honeypot = document.getElementById("newsletterWebsite");
+    function showMsg(text, type = "success") {
+      if (!msg) return;
+      msg.textContent = text;
+      msg.classList.remove("success", "error");
+      msg.classList.add(type === "success" ? "success" : "error");
+      msg.style.display = "block";
+      setTimeout(() => { if (msg) msg.style.display = "none"; }, 4000);
+    }
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
     newsletterForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const emailInput = newsletterForm.querySelector("input[type='email']") || newsletterForm.querySelector("input");
-      const email = emailInput ? emailInput.value : "";
-      alert(`Obrigado! Você foi inscrito com o email: ${email}`);
-      newsletterForm.reset();
+      const email = (emailInput ? emailInput.value : "").trim();
+      if (honeypot && honeypot.value) return; // bot
+      if (!email) { showMsg("Informe um e-mail.", "error"); return; }
+      if (!isValidEmail(email)) { showMsg("E-mail inválido.", "error"); return; }
+      if (btn) { btn.disabled = true; btn.dataset.originalText = btn.textContent; btn.textContent = "Enviando..."; }
+      // Simula requisição
+      setTimeout(() => {
+        showMsg("Inscrição realizada! Verifique seu e-mail.", "success");
+        newsletterForm.reset();
+        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.originalText || "Inscrever-se"; }
+      }, 900);
     });
   }
 }
@@ -836,6 +895,54 @@ function setLoginHeroCover() {
     el.style.backgroundPosition = "center";
   } catch (_) {}
 }
+
+// a11y: modal focus trap, Esc closes, restore focus
+let __modalKeydownHandler = null;
+let __lastFocusedEl = null;
+function setupModalA11y() {
+  if (!modal) return;
+  const dialog = modal.querySelector('.modal-content');
+  if (!dialog) return;
+  __lastFocusedEl = document.activeElement;
+  const focusableSelectors = [
+    'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])',
+    'textarea:not([disabled])', 'button:not([disabled])', 'iframe',
+    '[tabindex]:not([tabindex="-1"])', '[contenteditable="true"]'
+  ].join(',');
+  const getFocusable = () => Array.from(dialog.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
+  const focusables = getFocusable();
+  (focusables[0] || dialog).focus();
+
+  __modalKeydownHandler = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closeModal(); return; }
+    if (e.key === 'Tab') {
+      const f = getFocusable();
+      if (f.length === 0) { e.preventDefault(); dialog.focus(); return; }
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  };
+  dialog.addEventListener('keydown', __modalKeydownHandler);
+}
+function teardownModalA11y() {
+  if (!modal) return;
+  const dialog = modal.querySelector('.modal-content');
+  if (dialog && __modalKeydownHandler) dialog.removeEventListener('keydown', __modalKeydownHandler);
+  __modalKeydownHandler = null;
+  if (__lastFocusedEl && typeof __lastFocusedEl.focus === 'function') {
+    try { __lastFocusedEl.focus(); } catch(_) {}
+  }
+  __lastFocusedEl = null;
+}
+
+// Fallback image (SVG data URI)
+const FALLBACK_IMG = "data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='560'>\
+<rect width='100%' height='100%' fill='%23f3f4f6'/>\
+<text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='20'>Capa%20indisponivel</text>\
+</svg>";
 
 
 (function () {

@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const forgotPasswordLink = document.getElementById("forgotPasswordLink");
   const loginMessage = document.getElementById("loginMessage");
   const registerMessage = document.getElementById("registerMessage");
+  const togglePasswordButtons = document.querySelectorAll(".toggle-password");
 
   function showLogin() { if (loginForm) loginForm.style.display = "grid"; if (registerForm) registerForm.style.display = "none"; }
   function showRegister() { if (loginForm) loginForm.style.display = "none"; if (registerForm) registerForm.style.display = "grid"; }
@@ -46,6 +47,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (goToRegisterLink) goToRegisterLink.addEventListener("click", (e) => { e.preventDefault(); showRegister(); });
   if (goToLoginLink) goToLoginLink.addEventListener("click", (e) => { e.preventDefault(); showLogin(); });
   if (forgotPasswordLink) forgotPasswordLink.addEventListener("click", (e) => { e.preventDefault(); showMessage(loginMessage, "Recurso demonstrativo. Informe seu email e prossiga.", "success"); });
+
+  togglePasswordButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-target");
+      if (!targetId) return;
+      const input = document.getElementById(targetId);
+      if (!input) return;
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      btn.textContent = isHidden ? "🙈" : "👁️";
+      btn.setAttribute("aria-label", isHidden ? "Ocultar senha" : "Mostrar senha");
+    });
+  });
 
   if (registerForm) {
     registerForm.addEventListener("submit", (e) => {

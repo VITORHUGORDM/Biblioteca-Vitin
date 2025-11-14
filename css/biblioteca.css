@@ -79,35 +79,17 @@ body {
 .logo-section:hover {
   transform: scale(1.05);
 }
-
-
-.logo-section h1 {
-  color: var(--clean-color);
-  margin: 0;
-}
-
-.logo {
-  font-size: 32px;
-  line-height: 1;
-}
-
-
-.logo,
-.logo svg {
-  color: var(--clean-color);
-  fill: currentColor; 
-}
-
-.brand-logo {
+/* banner de topo da Biblioteca do Vitin */
+.logo-banner {
   display: block;
-  height: 56px;
+  height: 72px;
   width: auto;
   object-fit: contain;
 }
 
 @media (max-width: 640px) {
-  .brand-logo {
-    height: 48px;
+  .logo-banner {
+    height: 56px;
   }
 }
 
@@ -448,6 +430,30 @@ body {
   transition: var(--transition);
 }
 
+/* Image skeleton placeholder */
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+.image-wrapper .book-image {
+  height: 100%;
+}
+.skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+.image-wrapper.loaded .skeleton { display: none; }
+
 .book-card:hover .book-image {
   transform: scale(1.08);
 }
@@ -683,6 +689,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .modal-image {
@@ -693,6 +700,23 @@ body {
   object-fit: cover;
   box-shadow: var(--shadow-lg);
 }
+
+/* Spinner (modal image, newsletter) */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e5e7eb;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.modal-image-container .spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .modal-info h2 {
   font-size: 32px;
@@ -1389,6 +1413,9 @@ body {
   color: #ef4444;
   border: 1px solid rgba(239,68,68,0.08);
 }
+
+/* Accessible focus ring inside modal */
+.modal-content:focus { outline: 3px solid rgba(37,99,235,0.35); outline-offset: 2px; }
 
 .link-muted { color: var(--text-light); text-decoration: none; font-size: 14px; }
 .link-muted:hover { color: var(--text-dark); text-decoration: underline; }

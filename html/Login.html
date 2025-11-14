@@ -8,20 +8,10 @@
   <link rel="stylesheet" href="../css/login.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="container">
-        <a class="logo-section" href="./Biblioteca.html">
-          <h1>Biblioteca do Vitin</h1>
-        </a>
-        <nav class="nav">
-          <a class="nav-link" href="./Biblioteca.html">Início</a>
-          <a class="nav-link nav-login" href="#auth">Entrar / Cadastrar</a>
-        </nav>
-      </div>
-    </header>
+    
 
     <main>
-      <section id="auth" class="auth-section container" style="padding:40px 0;">
+      <section id="auth" class="auth-section">
         <div class="auth-wrapper">
           <div class="auth-card">
             <div class="auth-layout">
@@ -44,7 +34,10 @@
                   </div>
                   <div class="form-row">
                     <label for="loginPassword">Senha</label>
-                    <input id="loginPassword" name="password" type="password" required minlength="4" placeholder="Senha" />
+                    <div class="password-wrapper">
+                      <input id="loginPassword" name="password" type="password" required minlength="4" placeholder="Senha" />
+                      <button type="button" class="toggle-password" data-target="loginPassword" aria-label="Mostrar senha">👁️</button>
+                    </div>
                   </div>
                   <div class="form-row" style="margin-top:-4px;">
                     <a id="forgotPasswordLink" class="link-muted" href="#">Esqueceu a senha?</a>
@@ -68,11 +61,17 @@
                   </div>
                   <div class="form-row">
                     <label for="regPassword">Senha</label>
-                    <input id="regPassword" name="password" type="password" required minlength="4" placeholder="Senha" />
+                    <div class="password-wrapper">
+                      <input id="regPassword" name="password" type="password" required minlength="4" placeholder="Senha" />
+                      <button type="button" class="toggle-password" data-target="regPassword" aria-label="Mostrar senha">👁️</button>
+                    </div>
                   </div>
                   <div class="form-row">
                     <label for="regPasswordConfirm">Confirmar senha</label>
-                    <input id="regPasswordConfirm" name="passwordConfirm" type="password" required minlength="4" placeholder="Confirme a senha" />
+                    <div class="password-wrapper">
+                      <input id="regPasswordConfirm" name="passwordConfirm" type="password" required minlength="4" placeholder="Confirme a senha" />
+                      <button type="button" class="toggle-password" data-target="regPasswordConfirm" aria-label="Mostrar senha">👁️</button>
+                    </div>
                   </div>
                   <div class="form-row">
                     <button type="submit" class="btn btn-danger">Cadastrar</button>

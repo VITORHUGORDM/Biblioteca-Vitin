@@ -110,13 +110,14 @@
       </div>
     </section>
 
-    <div id="bookModal" class="modal">
-      <div class="modal-content">
+    <div id="bookModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-content" tabindex="-1">
         <button class="close" id="closeModal" aria-label="Fechar">
           &times;
         </button>
         <div class="modal-body">
           <div class="modal-image-container">
+            <div class="spinner" id="modalImgSpinner" aria-hidden="true"></div>
             <img
               id="modalImage"
               src=""
@@ -182,14 +183,16 @@
             Inscreva-se em nossa newsletter para receber as melhores
             recomendações de livros toda semana!
           </p>
-          <form class="newsletter-form" id="newsletterForm">
+          <form class="newsletter-form" id="newsletterForm" novalidate>
             <input
               type="email"
               placeholder="Seu email"
               required
               aria-label="Email"
             />
-            <button type="submit" class="btn btn-primary">Inscrever-se</button>
+            <input type="text" name="website" id="newsletterWebsite" style="position:absolute;left:-9999px;opacity:0;" tabindex="-1" aria-hidden="true" autocomplete="off" />
+            <button type="submit" class="btn btn-primary" id="newsletterSubmitBtn">Inscrever-se</button>
+            <div id="newsletterMessage" class="form-message" role="status" aria-live="polite" style="width:100%"></div>
           </form>
         </div>
       </div>
