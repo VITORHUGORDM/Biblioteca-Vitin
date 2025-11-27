@@ -6,21 +6,37 @@ export function getCurrentUser() {
   }
 }
 
+export function isAdmin(user) {
+  return user && user.email === "admin@biblioteca.com";
+}
+
 export function loginPath() {
-  return /\/html\//i.test(location.pathname) ? "./Login.html" : "html/Login.html";
+  return /\/html\//i.test(location.pathname)
+    ? "./Login.html"
+    : "html/Login.html";
 }
 
 export function updateAuthUI() {
   const navEl = document.querySelector(".nav");
   if (!navEl) return;
   const user = getCurrentUser();
- 
+
   navEl.querySelectorAll(".nav-user").forEach((el) => el.remove());
- 
+
   const loginLinks = navEl.querySelectorAll(".nav-login");
   loginLinks.forEach((a) => {
     a.style.display = user ? "none" : "";
   });
+
+  const adminLinks = navEl.querySelectorAll(".nav-admin");
+  adminLinks.forEach((a) => {
+    a.style.display = isAdmin(user) ? "" : "none";
+  });
+
+  const adminSection = document.getElementById("admin");
+  if (adminSection) {
+    adminSection.style.display = isAdmin(user) ? "" : "none";
+  }
 
   if (user) {
     const name = (user.name || user.email || "Usuário").trim();

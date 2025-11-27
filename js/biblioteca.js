@@ -1,4 +1,4 @@
-const books = [
+const defaultBooks = [
   {
     id: 1,
     title: "Abismo",
@@ -137,8 +137,8 @@ const books = [
     description:
       "Uma aventura épica em um mundo mágico cheio de criaturas fantásticas. O clássico que iniciou uma das maiores sagas da literatura.",
     isbn: "978-8532538",
-  amazonLink: "https://www.amazon.com.br/s?k=O+Hobbit+Tolkien",
-  featured: false,
+    amazonLink: "https://www.amazon.com.br/s?k=O+Hobbit+Tolkien",
+    featured: false,
   },
   {
     id: 11,
@@ -421,6 +421,22 @@ const books = [
     featured: false,
   },
 ];
+
+let books = loadBooks();
+
+function loadBooks() {
+  try {
+    const stored = localStorage.getItem("biblioteca_books");
+    return stored ? JSON.parse(stored) : defaultBooks;
+  } catch {
+    return defaultBooks;
+  }
+}
+
+function saveBooks() {
+  localStorage.setItem("biblioteca_books", JSON.stringify(books));
+}
+
 const categories = [
   "Todos",
   "Ficção",
@@ -435,6 +451,9 @@ const categories = [
 let currentCategory = "Todos";
 let searchTerm = "";
 let favorites = new Set();
+
+import { updateAuthUI } from "./autenticacao.js";
+
 function getFavoritesKey() {
   const u = getCurrentUser && getCurrentUser();
   return u ? `biblioteca_favoritos_${u.email}` : null;
@@ -465,6 +484,212 @@ const newsletterForm = document.getElementById("newsletterForm");
 const favoriteBooksContainer = document.getElementById("favoriteBooks");
 const noFavorites = document.getElementById("noFavorites");
 const modalFavBtn = document.getElementById("modalFavBtn");
+
+// Notification function
+function showNotification(message, type = "info") {
+  const notification = document.getElementById("notification");
+  if (!notification) return;
+
+  notification.textContent = message;
+  notification.className = `notification ${type}`;
+  notification.style.display = "block";
+
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 3000);
+}
+
+// Admin functions
+function setupAdmin() {
+  const adminTabs = document.querySelectorAll(".admin-tab");
+  const adminPanels = document.querySelectorAll(".admin-panel");
+
+  adminTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      adminTabs.forEach((t) => t.classList.remove("active"));
+      adminPanels.forEach((p) => p.classList.remove("active"));
+      tab.classList.add("active");
+      const panel = document.getElementById(tab.dataset.tab + "-panel");
+      if (panel) panel.classList.add("active");
+    });
+  });
+
+  const addBookForm = document.getElementById("addBookForm");
+  if (addBookForm) {
+    addBookForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const editId = parseInt(addBookForm.dataset.editId);
+      if (editId) {
+        // Update existing book
+        const index = books.findIndex((b) => b.id === editId);
+        if (index !== -1) {
+          books[index] = {
+            ...books[index],
+            title: document.getElementById("bookTitle").value,
+            author: document.getElementById("bookAuthor").value,
+            category: document.getElementById("bookCategory").value,
+            year: parseInt(document.getElementById("bookYear").value),
+            rating: parseFloat(document.getElementById("bookRating").value),
+            image: document.getElementById("bookImage").value,
+            description: document.getElementById("bookDescription").value,
+            isbn: document.getElementById("bookIsbn").value,
+            amazonLink: document.getElementById("bookAmazonLink").value,
+            featured: document.getElementById("bookFeatured").checked,
+          };
+          saveBooks();
+          renderAllBooks();
+          renderFeaturedBooks();
+          renderAdminBooks();
+          addBookForm.reset();
+          delete addBookForm.dataset.editId;
+          const submitBtn = addBookForm.querySelector("button[type='submit']");
+          submitBtn.textContent = "Adicionar Livro";
+          showNotification("Livro atualizado com sucesso!", "success");
+        }
+      } else {
+        // Add new book
+        const newBook = {
+          id: Date.now(),
+          title: document.getElementById("bookTitle").value,
+          author: document.getElementById("bookAuthor").value,
+          category: document.getElementById("bookCategory").value,
+          year: parseInt(document.getElementById("bookYear").value),
+          rating: parseFloat(document.getElementById("bookRating").value),
+          image: document.getElementById("bookImage").value,
+          description: document.getElementById("bookDescription").value,
+          isbn: document.getElementById("bookIsbn").value,
+          amazonLink: document.getElementById("bookAmazonLink").value,
+          featured: document.getElementById("bookFeatured").checked,
+        };
+        books.push(newBook);
+        saveBooks();
+        renderAllBooks();
+        renderFeaturedBooks();
+        renderAdminBooks();
+        addBookForm.reset();
+        showNotification("Livro adicionado com sucesso!", "success");
+      }
+    });
+  }
+
+  renderAdminBooks();
+  renderAdminUsers();
+
+  // Add event listeners for admin buttons
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("btn-delete")) {
+      if (e.target.dataset.bookId) {
+        const id = parseInt(e.target.dataset.bookId);
+        deleteBook(id);
+      } else if (e.target.dataset.userEmail) {
+        const email = e.target.dataset.userEmail;
+        deleteUser(email);
+      }
+    } else if (e.target.classList.contains("btn-edit")) {
+      const id = parseInt(e.target.dataset.bookId);
+      editBook(id);
+    }
+  });
+}
+
+function renderAdminBooks() {
+  const container = document.getElementById("adminBooksList");
+  if (!container) return;
+  container.innerHTML = "";
+  books.forEach((book) => {
+    const item = document.createElement("div");
+    item.className = "admin-book-item";
+    item.innerHTML = `
+      <div class="admin-book-info">
+        <h4>${book.title}</h4>
+        <p>Autor: ${book.author} | Categoria: ${book.category} | Ano: ${book.year}</p>
+      </div>
+      <div class="admin-book-actions">
+        <button class="btn-edit" data-book-id="${book.id}">Editar</button>
+        <button class="btn-delete" data-book-id="${book.id}">Excluir</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function renderAdminUsers() {
+  const container = document.getElementById("adminUsersList");
+  if (!container) return;
+  container.innerHTML = "";
+  const users = getUsers();
+  Object.keys(users).forEach((email) => {
+    const user = users[email];
+    const item = document.createElement("div");
+    item.className = "admin-book-item";
+    item.innerHTML = `
+      <div class="admin-book-info">
+        <h4>${user.name}</h4>
+        <p>Email: ${user.email}</p>
+      </div>
+      <div class="admin-book-actions">
+        <button class="btn-delete" data-user-email="${email}">Excluir</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function deleteUser(email) {
+  const currentUser = getCurrentUser();
+  if (currentUser && currentUser.email === email) {
+    showNotification("Você não pode excluir sua própria conta!", "error");
+    return;
+  }
+  if (confirm(`Tem certeza que deseja excluir o usuário ${email}?`)) {
+    const users = getUsers();
+    delete users[email];
+    localStorage.setItem("pj_users", JSON.stringify(users));
+    renderAdminUsers();
+    showNotification("Usuário excluído com sucesso!", "success");
+  }
+}
+
+function deleteBook(id) {
+  if (confirm("Tem certeza que deseja excluir este livro?")) {
+    books = books.filter((book) => book.id !== id);
+    saveBooks();
+    renderAllBooks();
+    renderFeaturedBooks();
+    renderAdminBooks();
+  }
+}
+
+function editBook(id) {
+  const book = books.find((b) => b.id === id);
+  if (!book) return;
+
+  document.getElementById("bookTitle").value = book.title;
+  document.getElementById("bookAuthor").value = book.author;
+  document.getElementById("bookCategory").value = book.category;
+  document.getElementById("bookYear").value = book.year;
+  document.getElementById("bookRating").value = book.rating;
+  document.getElementById("bookImage").value = book.image;
+  document.getElementById("bookDescription").value = book.description;
+  document.getElementById("bookIsbn").value = book.isbn;
+  document.getElementById("bookAmazonLink").value = book.amazonLink;
+  document.getElementById("bookFeatured").checked = book.featured;
+
+  // Change form to update mode
+  const form = document.getElementById("addBookForm");
+  const submitBtn = form.querySelector("button[type='submit']");
+  submitBtn.textContent = "Atualizar Livro";
+  form.dataset.editId = id;
+}
+
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem("pj_users") || "{}");
+  } catch {
+    return {};
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   renderCategories();
   renderFeaturedBooks();
@@ -473,6 +698,7 @@ document.addEventListener("DOMContentLoaded", function () {
   renderFavorites();
   setupEventListeners();
   updateAuthUI();
+  setupAdmin();
   setLoginHeroCover();
 
   try {
@@ -497,7 +723,7 @@ function isFavorite(bookId) {
 
 function toggleFavorite(bookId) {
   if (!getCurrentUser()) {
-    alert("Faça login para favoritar livros.");
+    showNotification("Faça login para favoritar livros.", "error");
     window.location.href = loginPath();
     return;
   }
@@ -517,8 +743,14 @@ function setFavBtnState(btn, fav) {
   if (!btn) return;
   btn.classList.toggle("active", fav);
   btn.textContent = fav ? "❤️" : "♡";
-  btn.setAttribute("aria-label", fav ? "Remover dos favoritos" : "Adicionar aos favoritos");
-  btn.setAttribute("title", fav ? "Remover dos favoritos" : "Adicionar aos favoritos");
+  btn.setAttribute(
+    "aria-label",
+    fav ? "Remover dos favoritos" : "Adicionar aos favoritos"
+  );
+  btn.setAttribute(
+    "title",
+    fav ? "Remover dos favoritos" : "Adicionar aos favoritos"
+  );
 }
 
 function updateModalFavBtn() {
@@ -576,7 +808,9 @@ function renderFavorites() {
       const title = noFavorites.querySelector(".no-results-content p");
       const subtitle = noFavorites.querySelector(".no-results-subtitle");
       if (title) title.textContent = "Faça login para ver seus favoritos";
-      if (subtitle) subtitle.textContent = "Entre na sua conta para salvar e acessar favoritos";
+      if (subtitle)
+        subtitle.textContent =
+          "Entre na sua conta para salvar e acessar favoritos";
     }
     return;
   }
@@ -602,8 +836,24 @@ function createBookCard(book) {
   const fav = isFavorite(book.id);
 
   card.innerHTML = `
-    <button class="fav-btn ${fav ? "active" : ""}" data-id="${book.id}" aria-label="${fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}" title="${getCurrentUser() ? (fav ? "Remover dos favoritos" : "Adicionar aos favoritos") : "Faça login para favoritar"}">${fav ? "❤️" : "♡"}</button>
-    <div class="image-wrapper"><div class="skeleton" aria-hidden="true"></div><img src="${book.image}" alt="${book.title}" class="book-image" loading="lazy"></div>
+    <button class="fav-btn ${fav ? "active" : ""}" data-id="${
+    book.id
+  }" aria-label="${
+    fav ? "Remover dos favoritos" : "Adicionar aos favoritos"
+  }" title="${
+    getCurrentUser()
+      ? fav
+        ? "Remover dos favoritos"
+        : "Adicionar aos favoritos"
+      : "Faça login para favoritar"
+  }">${fav ? "❤️" : "♡"}</button>
+    <div class="image-wrapper">
+      <div class="skeleton" aria-hidden="true"></div>
+      <div class="spinner book-spinner" aria-hidden="true" style="display:none"></div>
+      <img src="${book.image}" alt="${
+    book.title
+  }" class="book-image" loading="lazy">
+    </div>
     <div class="book-info">
       <h3 class="book-title">${book.title}</h3>
       <p class="book-author">${book.author}</p>
@@ -627,14 +877,34 @@ function createBookCard(book) {
   // image load/fallback handling
   const img = card.querySelector(".book-image");
   const wrapper = card.querySelector(".image-wrapper");
-  if (img && wrapper) {
-    const done = () => wrapper.classList.add("loaded");
-    img.addEventListener("load", done, { once: true });
-    img.addEventListener("error", () => {
-      img.src = FALLBACK_IMG;
-      img.alt = `${book.title} (capa indisponível)`;
-      done();
-    }, { once: true });
+  const spinner = card.querySelector(".book-spinner");
+  const skeleton = card.querySelector(".skeleton");
+  if (img && wrapper && spinner && skeleton) {
+    spinner.style.display = "block";
+    skeleton.style.display = "block";
+    img.style.visibility = "hidden";
+    img.addEventListener(
+      "load",
+      () => {
+        spinner.style.display = "none";
+        skeleton.style.display = "none";
+        img.style.visibility = "visible";
+        wrapper.classList.add("loaded");
+      },
+      { once: true }
+    );
+    img.addEventListener(
+      "error",
+      () => {
+        img.src = FALLBACK_IMG;
+        img.alt = `${book.title} (capa indisponível)`;
+        spinner.style.display = "none";
+        skeleton.style.display = "none";
+        img.style.visibility = "visible";
+        wrapper.classList.add("loaded");
+      },
+      { once: true }
+    );
   }
 
   return card;
@@ -689,9 +959,14 @@ function openModal(book) {
   if (imgEl) {
     imgEl.removeAttribute("aria-hidden");
     imgEl.src = book.image;
-    const onDone = () => { if (modalSpinner) modalSpinner.style.display = "none"; };
+    const onDone = () => {
+      if (modalSpinner) modalSpinner.style.display = "none";
+    };
     imgEl.onload = onDone;
-    imgEl.onerror = () => { imgEl.src = FALLBACK_IMG; onDone(); };
+    imgEl.onerror = () => {
+      imgEl.src = FALLBACK_IMG;
+      onDone();
+    };
   }
 
   const titleEl = document.getElementById("modalTitle");
@@ -758,7 +1033,10 @@ function setupEventListeners() {
   }
 
   // Clique no botão de busca também rola para os resultados
-  if (searchBtn) searchBtn.addEventListener("click", () => searchBooks(searchInput.value, true));
+  if (searchBtn)
+    searchBtn.addEventListener("click", () =>
+      searchBooks(searchInput.value, true)
+    );
   if (closeBtn) closeBtn.addEventListener("click", closeModal);
   if (typeof closeModalBtn !== "undefined" && closeModalBtn)
     closeModalBtn.addEventListener("click", closeModal);
@@ -768,11 +1046,14 @@ function setupEventListeners() {
       if (e.target === modal) closeModal();
     });
   }
-  if (menuToggle) menuToggle.addEventListener("click", () => nav.classList.toggle("active"));
+  if (menuToggle)
+    menuToggle.addEventListener("click", () => nav.classList.toggle("active"));
 
-  document.querySelectorAll(".nav-link").forEach((link) =>
-    link.addEventListener("click", () => nav.classList.remove("active"))
-  );
+  document
+    .querySelectorAll(".nav-link")
+    .forEach((link) =>
+      link.addEventListener("click", () => nav.classList.remove("active"))
+    );
   if (newsletterForm) {
     const msg = document.getElementById("newsletterMessage");
     const btn = document.getElementById("newsletterSubmitBtn");
@@ -783,24 +1064,41 @@ function setupEventListeners() {
       msg.classList.remove("success", "error");
       msg.classList.add(type === "success" ? "success" : "error");
       msg.style.display = "block";
-      setTimeout(() => { if (msg) msg.style.display = "none"; }, 4000);
+      setTimeout(() => {
+        if (msg) msg.style.display = "none";
+      }, 4000);
     }
     function isValidEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
     newsletterForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const emailInput = newsletterForm.querySelector("input[type='email']") || newsletterForm.querySelector("input");
+      const emailInput =
+        newsletterForm.querySelector("input[type='email']") ||
+        newsletterForm.querySelector("input");
       const email = (emailInput ? emailInput.value : "").trim();
       if (honeypot && honeypot.value) return; // bot
-      if (!email) { showMsg("Informe um e-mail.", "error"); return; }
-      if (!isValidEmail(email)) { showMsg("E-mail inválido.", "error"); return; }
-      if (btn) { btn.disabled = true; btn.dataset.originalText = btn.textContent; btn.textContent = "Enviando..."; }
+      if (!email) {
+        showMsg("Informe um e-mail.", "error");
+        return;
+      }
+      if (!isValidEmail(email)) {
+        showMsg("E-mail inválido.", "error");
+        return;
+      }
+      if (btn) {
+        btn.disabled = true;
+        btn.dataset.originalText = btn.textContent;
+        btn.textContent = "Enviando...";
+      }
       // Simula requisição
       setTimeout(() => {
         showMsg("Inscrição realizada! Verifique seu e-mail.", "success");
         newsletterForm.reset();
-        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.originalText || "Inscrever-se"; }
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = btn.dataset.originalText || "Inscrever-se";
+        }
       }, 900);
     });
   }
@@ -810,7 +1108,7 @@ document.addEventListener("click", (e) => {
   if (btn) {
     e.stopPropagation();
     if (!getCurrentUser()) {
-      alert("Faça login para favoritar livros.");
+      showNotification("Faça login para favoritar livros.", "error");
       window.location.href = loginPath();
       return;
     }
@@ -826,52 +1124,6 @@ function getCurrentUser() {
   }
 }
 
-function loginPath() {
-  return /\/html\//i.test(location.pathname) ? "./Login.html" : "html/Login.html";
-}
-
-function updateAuthUI() {
-  const navEl = document.querySelector(".nav");
-  if (!navEl) return;
-
-  const user = getCurrentUser();
-  navEl.querySelectorAll(".nav-user").forEach((el) => el.remove());
-  const loginLinks = navEl.querySelectorAll(".nav-login");
-  loginLinks.forEach((a) => {
-    if (user) {
-      a.style.display = "none";
-    } else {
-      a.style.display = "";
-    }
-  });
-
-  if (user) {
-    const name = (user.name || user.email || "Usuário").trim();
-    const firstName = name.split(" ")[0];
-
-    const container = document.createElement("div");
-    container.className = "nav-user";
-
-    const greet = document.createElement("span");
-    greet.className = "greet";
-    greet.textContent = `Olá, ${firstName}`;
-
-    const logout = document.createElement("a");
-    logout.href = "#";
-    logout.className = "logout-link";
-    logout.textContent = "Sair";
-    logout.addEventListener("click", (e) => {
-      e.preventDefault();
-      localStorage.removeItem("pj_currentUser");
-      updateAuthUI();
-      location.href = loginPath();
-    });
-
-    container.appendChild(greet);
-    container.appendChild(logout);
-    navEl.appendChild(container);
-  }
-}
 function setLoginHeroCover() {
   if (!/\/Login\.html$/i.test(location.pathname)) return;
   try {
@@ -885,7 +1137,7 @@ function setLoginHeroCover() {
       url = url.replace(/^\.+\//, "/");
     }
     if (!url.startsWith("/")) url = "/" + url;
- 
+
     el.style.setProperty(
       "background-image",
       `linear-gradient(rgba(11,18,32,.35), rgba(11,18,32,.35)), url('${url}')`,
@@ -901,49 +1153,74 @@ let __modalKeydownHandler = null;
 let __lastFocusedEl = null;
 function setupModalA11y() {
   if (!modal) return;
-  const dialog = modal.querySelector('.modal-content');
+  const dialog = modal.querySelector(".modal-content");
   if (!dialog) return;
   __lastFocusedEl = document.activeElement;
   const focusableSelectors = [
-    'a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])',
-    'textarea:not([disabled])', 'button:not([disabled])', 'iframe',
-    '[tabindex]:not([tabindex="-1"])', '[contenteditable="true"]'
-  ].join(',');
-  const getFocusable = () => Array.from(dialog.querySelectorAll(focusableSelectors)).filter(el => el.offsetParent !== null);
+    "a[href]",
+    "area[href]",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "button:not([disabled])",
+    "iframe",
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable="true"]',
+  ].join(",");
+  const getFocusable = () =>
+    Array.from(dialog.querySelectorAll(focusableSelectors)).filter(
+      (el) => el.offsetParent !== null
+    );
   const focusables = getFocusable();
   (focusables[0] || dialog).focus();
 
   __modalKeydownHandler = (e) => {
-    if (e.key === 'Escape') { e.preventDefault(); closeModal(); return; }
-    if (e.key === 'Tab') {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeModal();
+      return;
+    }
+    if (e.key === "Tab") {
       const f = getFocusable();
-      if (f.length === 0) { e.preventDefault(); dialog.focus(); return; }
+      if (f.length === 0) {
+        e.preventDefault();
+        dialog.focus();
+        return;
+      }
       const first = f[0];
       const last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   };
-  dialog.addEventListener('keydown', __modalKeydownHandler);
+  dialog.addEventListener("keydown", __modalKeydownHandler);
 }
 function teardownModalA11y() {
   if (!modal) return;
-  const dialog = modal.querySelector('.modal-content');
-  if (dialog && __modalKeydownHandler) dialog.removeEventListener('keydown', __modalKeydownHandler);
+  const dialog = modal.querySelector(".modal-content");
+  if (dialog && __modalKeydownHandler)
+    dialog.removeEventListener("keydown", __modalKeydownHandler);
   __modalKeydownHandler = null;
-  if (__lastFocusedEl && typeof __lastFocusedEl.focus === 'function') {
-    try { __lastFocusedEl.focus(); } catch(_) {}
+  if (__lastFocusedEl && typeof __lastFocusedEl.focus === "function") {
+    try {
+      __lastFocusedEl.focus();
+    } catch (_) {}
   }
   __lastFocusedEl = null;
 }
 
 // Fallback image (SVG data URI)
-const FALLBACK_IMG = "data:image/svg+xml;utf8,\
+const FALLBACK_IMG =
+  "data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' width='400' height='560'>\
 <rect width='100%' height='100%' fill='%23f3f4f6'/>\
 <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='20'>Capa%20indisponivel</text>\
 </svg>";
-
 
 (function () {
   const USERS_KEY = "pj_users";
@@ -997,27 +1274,50 @@ const FALLBACK_IMG = "data:image/svg+xml;utf8,\
       if (registerForm) registerForm.style.display = "grid";
     }
 
-  if (showLoginBtn) showLoginBtn.addEventListener("click", showLogin);
-  if (showRegisterBtn) showRegisterBtn.addEventListener("click", showRegister);
-    if (goToRegisterLink) goToRegisterLink.addEventListener("click", (e) => { e.preventDefault(); showRegister(); });
-    if (goToLoginLink) goToLoginLink.addEventListener("click", (e) => { e.preventDefault(); showLogin(); });
+    if (showLoginBtn) showLoginBtn.addEventListener("click", showLogin);
+    if (showRegisterBtn)
+      showRegisterBtn.addEventListener("click", showRegister);
+    if (goToRegisterLink)
+      goToRegisterLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        showRegister();
+      });
+    if (goToLoginLink)
+      goToLoginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        showLogin();
+      });
     if (forgotPasswordLink) {
       forgotPasswordLink.addEventListener("click", (e) => {
         e.preventDefault();
-        showMessage(loginMessage, "Recurso demonstrativo: informe seu email e clique em Fazer Login para receber instruções.", "success");
+        showMessage(
+          loginMessage,
+          "Recurso demonstrativo: informe seu email e clique em Fazer Login para receber instruções.",
+          "success"
+        );
       });
     }
 
     if (registerForm) {
       registerForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const name = (registerForm.querySelector("#regName") || {}).value?.trim() || "";
-        const email = (registerForm.querySelector("#regEmail") || {}).value?.trim().toLowerCase() || "";
-        const password = (registerForm.querySelector("#regPassword") || {}).value || "";
-        const confirm = (registerForm.querySelector("#regPasswordConfirm") || {}).value || "";
+        const name =
+          (registerForm.querySelector("#regName") || {}).value?.trim() || "";
+        const email =
+          (registerForm.querySelector("#regEmail") || {}).value
+            ?.trim()
+            .toLowerCase() || "";
+        const password =
+          (registerForm.querySelector("#regPassword") || {}).value || "";
+        const confirm =
+          (registerForm.querySelector("#regPasswordConfirm") || {}).value || "";
 
         if (!name || !email || !password) {
-          showMessage(registerMessage, "Por favor preencha todos os campos.", "error");
+          showMessage(
+            registerMessage,
+            "Por favor preencha todos os campos.",
+            "error"
+          );
           return;
         }
 
@@ -1033,14 +1333,22 @@ const FALLBACK_IMG = "data:image/svg+xml;utf8,\
 
         const users = getUsers();
         if (users[email]) {
-          showMessage(registerMessage, "Já existe uma conta com esse email.", "error");
+          showMessage(
+            registerMessage,
+            "Já existe uma conta com esse email.",
+            "error"
+          );
           return;
         }
 
         users[email] = { name, email, password };
         saveUsers(users);
 
-        showMessage(registerMessage, "Cadastro realizado com sucesso! Faça login.", "success");
+        showMessage(
+          registerMessage,
+          "Cadastro realizado com sucesso! Faça login.",
+          "success"
+        );
         registerForm.reset();
         showLogin();
       });
@@ -1049,8 +1357,12 @@ const FALLBACK_IMG = "data:image/svg+xml;utf8,\
     if (loginForm) {
       loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const email = (loginForm.querySelector("#loginEmail") || {}).value?.trim().toLowerCase() || "";
-        const password = (loginForm.querySelector("#loginPassword") || {}).value || "";
+        const email =
+          (loginForm.querySelector("#loginEmail") || {}).value
+            ?.trim()
+            .toLowerCase() || "";
+        const password =
+          (loginForm.querySelector("#loginPassword") || {}).value || "";
 
         if (!email || !password) {
           showMessage(loginMessage, "Preencha email e senha.", "error");
@@ -1069,8 +1381,15 @@ const FALLBACK_IMG = "data:image/svg+xml;utf8,\
           return;
         }
 
-        localStorage.setItem("pj_currentUser", JSON.stringify({ email: user.email, name: user.name }));
-        showMessage(loginMessage, `Olá, ${user.name}! Login realizado.`, "success");
+        localStorage.setItem(
+          "pj_currentUser",
+          JSON.stringify({ email: user.email, name: user.name })
+        );
+        showMessage(
+          loginMessage,
+          `Olá, ${user.name}! Login realizado.`,
+          "success"
+        );
         loginForm.reset();
         setTimeout(() => {
           window.location.href = "./Biblioteca.html";
@@ -1079,4 +1398,3 @@ const FALLBACK_IMG = "data:image/svg+xml;utf8,\
     }
   });
 })();
-

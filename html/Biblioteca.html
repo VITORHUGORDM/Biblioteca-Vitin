@@ -8,7 +8,7 @@
       name="description"
       content="Descubra e compre livros online. Busque por título, autor ou categoria. Links diretos para Amazon."
     />
-  <link rel="stylesheet" href="../css/biblioteca.css" />
+    <link rel="stylesheet" href="../css/biblioteca.css" />
   </head>
   <body>
     <header class="header">
@@ -21,12 +21,10 @@
           <a href="#destaque" class="nav-link">Destaque</a>
           <a href="#categorias" class="nav-link">Categorias</a>
           <a href="#favoritos" class="nav-link">Favoritos</a>
-          <a href="#sobre" class="nav-link">Sobre</a>
+          <a href="#admin" class="nav-link nav-admin" style="display: none"
+            >Admin</a
+          >
           <a href="./Login.html" class="nav-link nav-login" aria-label="Entrar">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <circle cx="12" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2" />
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
             <span>Entrar</span>
           </a>
         </nav>
@@ -53,9 +51,30 @@
               aria-label="Buscar livros"
             />
             <button class="search-btn" id="searchBtn" aria-label="Buscar">
-              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <circle
+                  cx="11"
+                  cy="11"
+                  r="7"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <line
+                  x1="21"
+                  y1="21"
+                  x2="16.65"
+                  y2="16.65"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
               </svg>
             </button>
           </div>
@@ -101,16 +120,24 @@
       <div class="container">
         <h3>❤️ Favoritos</h3>
         <div class="books-grid" id="favoriteBooks"></div>
-        <div id="noFavorites" class="no-results" style="display:none">
+        <div id="noFavorites" class="no-results" style="display: none">
           <div class="no-results-content">
             <p>Sem favoritos ainda</p>
-            <p class="no-results-subtitle">Clique no coração em um livro para favoritar</p>
+            <p class="no-results-subtitle">
+              Clique no coração em um livro para favoritar
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <div id="bookModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div
+      id="bookModal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
       <div class="modal-content" tabindex="-1">
         <button class="close" id="closeModal" aria-label="Fechar">
           &times;
@@ -127,7 +154,13 @@
           </div>
           <div class="modal-info">
             <h2 id="modalTitle"></h2>
-            <button class="fav-btn" id="modalFavBtn" aria-label="Adicionar aos favoritos">♡</button>
+            <button
+              class="fav-btn"
+              id="modalFavBtn"
+              aria-label="Adicionar aos favoritos"
+            >
+              ♡
+            </button>
             <p id="modalAuthor" class="modal-author"></p>
 
             <div class="modal-details">
@@ -190,10 +223,124 @@
               required
               aria-label="Email"
             />
-            <input type="text" name="website" id="newsletterWebsite" style="position:absolute;left:-9999px;opacity:0;" tabindex="-1" aria-hidden="true" autocomplete="off" />
-            <button type="submit" class="btn btn-primary" id="newsletterSubmitBtn">Inscrever-se</button>
-            <div id="newsletterMessage" class="form-message" role="status" aria-live="polite" style="width:100%"></div>
+            <input
+              type="text"
+              name="website"
+              id="newsletterWebsite"
+              style="position: absolute; left: -9999px; opacity: 0"
+              tabindex="-1"
+              aria-hidden="true"
+              autocomplete="off"
+            />
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="newsletterSubmitBtn"
+            >
+              Inscrever-se
+            </button>
+            <div
+              id="newsletterMessage"
+              class="form-message"
+              role="status"
+              aria-live="polite"
+              style="width: 100%"
+            ></div>
           </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-section" id="admin" style="display: none">
+      <div class="container">
+        <h3>🛠️ Administração</h3>
+        <p class="subtitle">Área reservada para administradores do sistema</p>
+        <div class="admin-content">
+          <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="books">
+              Gerenciar Livros
+            </button>
+            <button class="admin-tab" data-tab="users">
+              Gerenciar Usuários
+            </button>
+          </div>
+          <div class="admin-panel active" id="books-panel">
+            <h4>Adicionar Novo Livro</h4>
+            <form id="addBookForm">
+              <div class="form-row">
+                <input
+                  type="text"
+                  id="bookTitle"
+                  placeholder="Título"
+                  required
+                />
+                <input
+                  type="text"
+                  id="bookAuthor"
+                  placeholder="Autor"
+                  required
+                />
+              </div>
+              <div class="form-row">
+                <select id="bookCategory" required>
+                  <option value="">Selecione Categoria</option>
+                  <option value="Ficção">Ficção</option>
+                  <option value="Desenvolvimento">Desenvolvimento</option>
+                  <option value="Psicologia">Psicologia</option>
+                  <option value="Fantasia">Fantasia</option>
+                  <option value="Design">Design</option>
+                  <option value="Tecnologia">Tecnologia</option>
+                  <option value="História">História</option>
+                  <option value="Mistério">Mistério</option>
+                </select>
+                <input type="number" id="bookYear" placeholder="Ano" required />
+              </div>
+              <div class="form-row">
+                <input type="text" id="bookIsbn" placeholder="ISBN" required />
+                <input
+                  type="text"
+                  id="bookImage"
+                  placeholder="URL ou caminho da Capa"
+                  required
+                />
+              </div>
+              <div class="form-row">
+                <input
+                  type="url"
+                  id="bookAmazonLink"
+                  placeholder="Link Amazon"
+                  required
+                />
+                <input
+                  type="number"
+                  id="bookRating"
+                  placeholder="Avaliação (0-5)"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  required
+                />
+              </div>
+              <textarea
+                id="bookDescription"
+                placeholder="Descrição"
+                rows="3"
+                required
+              ></textarea>
+              <div class="form-row">
+                <label
+                  ><input type="checkbox" id="bookFeatured" /> Destaque</label
+                >
+                <button type="submit">Adicionar Livro</button>
+              </div>
+            </form>
+            <h4>Livros Existentes</h4>
+            <div id="adminBooksList"></div>
+          </div>
+          <div class="admin-panel" id="users-panel">
+            <h4>Usuários Registrados</h4>
+            <div id="adminUsersList"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -223,6 +370,8 @@
         </div>
       </div>
     </footer>
+
+    <div id="notification" class="notification" style="display: none"></div>
 
     <script type="module" src="../js/biblioteca.js"></script>
   </body>
